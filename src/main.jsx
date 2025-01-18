@@ -4,12 +4,14 @@ import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } 
 import './index.css';
 import NewsInterface from './NewsInterface.jsx';
 import LandingPage from './LandingPage.jsx';
+import DiscoveryPage from './DiscoveryPage.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/newssearch" element={<NewsInterface />} />
+      <Route path="/analysis" element={<NewsInterface />} />
+      <Route path="/discovery" element={<DiscoveryPage />} />
     </>
   )
 );
