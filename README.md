@@ -1,14 +1,44 @@
-##News Scrapper
+# News Scraper
 
-Bad news... there is bias in everything we do— a good example being writing !   News Scrapper scraps the various news sources to compile and summarize each of their accounts of the event.   The summary is then converted into an easy to consume format.  
+This project is a news scraper that collects and displays the latest news articles from various sources.
 
-##Real-world Problem
+## Features
 
+- Scrapes news articles from multiple sources
+- Displays headlines, summaries, and links to full articles
+- Supports filtering by category and date
 
-##Connection to Perspective
+## Installation
 
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/newsscraper.git
+    ```
+2. Navigate to the project directory:
+    ```bash
+    cd newsscraper
+    ```
+3. Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
+## Usage
 
-##Technologies Used
+1. Run the scraper:
+    ```bash
+    python scraper.py
+    ```
+2. Access the web interface at `http://localhost:5000` to view the scraped news articles.
 
+## Contributing
 
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any questions or suggestions, please contact [yourname@example.com](mailto:yourname@example.com).
