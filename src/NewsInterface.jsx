@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Play, Pause, Layout } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import {
   createTheme,
   ThemeProvider,
@@ -93,8 +94,10 @@ const StyledTab = styled(Tab)(({ theme }) => ({
 }));
 
 const NewsInterface = () => {
+  const location = useLocation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTab, setActiveTab] = useState('similarities');
+  const title = location.state?.title || "Default Title";
 
   // Sample data
   const viewpoints = {
@@ -169,7 +172,7 @@ const NewsInterface = () => {
                 borderRadius: `${theme.shape.borderRadius / 2}px`,
               }}
             >
-              Climate Change Policy Debate: Understanding Different Perspectives
+              {title}
             </Typography>
           </Box>
           <LinearProgress variant="determinate" value={30} sx={{ height: 6, borderRadius: 3 }} />

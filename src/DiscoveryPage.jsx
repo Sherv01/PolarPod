@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Clock, TrendingUp } from 'lucide-react';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   TextField,
@@ -92,6 +93,7 @@ const StyledSearch = styled(TextField)(({ theme }) => ({
 
 const DiscoveryPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   // Sample news data - would come from API in real app
   const newsArticles = [
@@ -164,7 +166,7 @@ const DiscoveryPage = () => {
             {/* Featured Article (Large Tile) */}
             {newsArticles.filter((article) => article.isLarge).map((article) => (
               <Grid key={article.id} item xs={12} md={8} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
-                <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: 3 }} >
+                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
                   <CardMedia
                     component="img"
                     height="300"
@@ -191,7 +193,7 @@ const DiscoveryPage = () => {
             {/* Regular Articles (Smaller Tiles) */}
             {newsArticles.filter((article) => !article.isLarge).map((article) => (
               <Grid key={article.id} item xs={12} md={4} >
-                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }}>
+                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
                   <CardMedia
                     component="img"
                     height="150"
