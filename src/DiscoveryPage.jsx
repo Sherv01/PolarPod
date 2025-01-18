@@ -32,7 +32,9 @@ const Header = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     fontWeight: 'bold',
+                    cursor: 'pointer'
                 }}
+                onClick={() => window.location.href = '/home'}
             >
                 NewsScraper
             </Typography>

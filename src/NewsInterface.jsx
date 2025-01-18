@@ -28,13 +28,15 @@ const Header = () => {
             }}
         >
             <Typography
-                variant="h4"
-                sx={{
-                    background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontWeight: 'bold',
-                }}
+              variant="h4"
+              sx={{
+                background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onClick={() => window.location.href = '/home'}
             >
                 NewsScraper
             </Typography>
