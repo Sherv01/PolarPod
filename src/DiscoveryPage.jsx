@@ -172,7 +172,10 @@ const DiscoveryPage = () => {
                     alt={article.title}
                   />
                   <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }} >
+                    <Box sx = {{ display: 'flex', gap: 1 }}>
                     <Chip label={article.category} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
+                    <Chip label={"Featured"} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
+                    </Box>
                     <Typography variant="h6" component="h2" sx={{ mt: 1 }}>
                       {article.title}
                     </Typography>
@@ -188,7 +191,7 @@ const DiscoveryPage = () => {
             {/* Regular Articles (Smaller Tiles) */}
             {newsArticles.filter((article) => !article.isLarge).map((article) => (
               <Grid key={article.id} item xs={12} md={4} >
-                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
+                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }}>
                   <CardMedia
                     component="img"
                     height="150"
