@@ -11,6 +11,51 @@ import {
   Typography,
   Chip,
 } from '@mui/material';
+
+const Header = () => {
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '16px 32px',
+                backgroundColor: theme.palette.background.default,
+                boxShadow: theme.shadows[3],
+            }}
+        >
+            <Typography
+                variant="h4"
+                sx={{
+                    background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 'bold',
+                }}
+            >
+                NewsScraper
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 3 }}>
+                {['Home', 'About', 'Discovery', 'Contact', 'Team'].map((page) => (
+                    <Typography
+                        key={page}
+                        variant="body1"
+                        sx={{
+                            color: theme.palette.text.primary,
+                            cursor: 'pointer',
+                            '&:hover': {
+                                color: theme.palette.primary.main,
+                            },
+                        }}
+                    >
+                        {page}
+                    </Typography>
+                ))}
+            </Box>
+        </Box>
+    );
+};
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -94,6 +139,7 @@ const DiscoveryPage = () => {
 
   return (
     <ThemeProvider theme={theme}>
+    <Header />
       <Box sx={{ minHeight: '100vh', backgroundColor: theme.palette.background.default, color: '#003064', p: 4 }}>
         {/* Search Section */}
         <Box maxWidth="md" mx="auto" mb={4}>
