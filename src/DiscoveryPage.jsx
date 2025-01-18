@@ -163,15 +163,15 @@ const DiscoveryPage = () => {
           <Grid container spacing={3}>
             {/* Featured Article (Large Tile) */}
             {newsArticles.filter((article) => article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={8}>
-                <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: 3 }}>
+              <Grid key={article.id} item xs={12} md={8} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
+                <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: 3 }} >
                   <CardMedia
                     component="img"
                     height="300"
                     image={article.image}
                     alt={article.title}
                   />
-                  <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }}>
+                  <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }} >
                     <Chip label={article.category} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
                     <Typography variant="h6" component="h2" sx={{ mt: 1 }}>
                       {article.title}
@@ -187,8 +187,8 @@ const DiscoveryPage = () => {
 
             {/* Regular Articles (Smaller Tiles) */}
             {newsArticles.filter((article) => !article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={4}>
-                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}}>
+              <Grid key={article.id} item xs={12} md={4} >
+                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
                   <CardMedia
                     component="img"
                     height="150"

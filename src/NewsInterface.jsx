@@ -176,7 +176,7 @@ const NewsInterface = () => {
         </Card>
 
         {/* Right Side: Perspectives */}
-        <Card sx={{ flex: 1, boxShadow: 3 }}>
+        <Card sx={{ flex: 1, boxShadow: 3}}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}>
@@ -197,6 +197,11 @@ const NewsInterface = () => {
                   key={key}
                   label={key.charAt(0).toUpperCase() + key.slice(1)}
                   value={key}
+                  sx={{
+                    '&:hover': {
+                      color: theme.palette.primary.main,
+                    },
+                  }}
                 />
               ))}
             </Tabs>
