@@ -1,13 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiasBuster</title>
+</head>
+<body>
+    <h1>Welcome to BiasBuster</h1>
+    <form id="promptForm">
+        <textarea id="prompt" rows="4" cols="50" placeholder="Enter your topic here..."></textarea><br><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <div id="results">
+        <h2>Results</h2>
+        <div id="rightSummary">
+            <h3>Right-Wing Summary</h3>
+            <p></p>
+        </div>
+        <div id="leftSummary">
+            <h3>Left-Wing Summary</h3>
+            <p></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('promptForm');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+            } else {
+                document.querySelector('#rightSummary p').innerText = data.right_summary;
+                document.querySelector('#leftSummary p').innerText = data.left_summary;
+            }
+        });
+    </script>
+</body>
 </html>
