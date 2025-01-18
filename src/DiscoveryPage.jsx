@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Clock, TrendingUp } from 'lucide-react';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   TextField,
@@ -31,7 +32,9 @@ const Header = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     fontWeight: 'bold',
+                    cursor: 'pointer'
                 }}
+                onClick={() => window.location.href = '/home'}
             >
                 NewsScraper
             </Typography>
@@ -67,6 +70,7 @@ const theme = createTheme({
     },
     background: {
       default: '#1a2129',
+      paper: '#262A33',
     },
     text: {
       primary: '#C0C6D7',
@@ -82,16 +86,21 @@ const theme = createTheme({
 });
 
 const StyledSearch = styled(TextField)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[1],
-  '& .MuiInputBase-root': {
-    paddingLeft: theme.spacing(4),
-  },
-}));
+    backgroundColor: "#525E76",
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[1],
+    '& .MuiInputBase-root': {
+      paddingLeft: theme.spacing(4),
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.background.paper, // Replace with your desired color
+      opacity: 1, // Ensures the color is fully visible
+    },
+  }));
 
 const DiscoveryPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   // Sample news data - would come from API in real app
   const newsArticles = [
@@ -151,7 +160,7 @@ const DiscoveryPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             InputProps={{
               startAdornment: (
-                <Search style={{ marginRight: '8px', color: theme.palette.text.secondary }} />
+                <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
               ),
             }}
             fullWidth
@@ -163,16 +172,19 @@ const DiscoveryPage = () => {
           <Grid container spacing={3}>
             {/* Featured Article (Large Tile) */}
             {newsArticles.filter((article) => article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={8}>
-                <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: 3 }}>
+              <Grid key={article.id} item xs={12} md={8} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
+                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
                   <CardMedia
                     component="img"
                     height="300"
                     image={article.image}
                     alt={article.title}
                   />
-                  <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }}>
+                  <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }} >
+                    <Box sx = {{ display: 'flex', gap: 1 }}>
                     <Chip label={article.category} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
+                    <Chip label={"Featured"} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
+                    </Box>
                     <Typography variant="h6" component="h2" sx={{ mt: 1 }}>
                       {article.title}
                     </Typography>
@@ -187,8 +199,8 @@ const DiscoveryPage = () => {
 
             {/* Regular Articles (Smaller Tiles) */}
             {newsArticles.filter((article) => !article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={4}>
-                <Card sx={{ boxShadow: 1, '&:hover': { boxShadow: 4 }}}>
+              <Grid key={article.id} item xs={12} md={4} >
+                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
                   <CardMedia
                     component="img"
                     height="150"
