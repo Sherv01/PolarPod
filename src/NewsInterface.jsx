@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Play, Pause, Layout } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import {
   createTheme,
   ThemeProvider,
@@ -27,13 +28,15 @@ const Header = () => {
             }}
         >
             <Typography
-                variant="h4"
-                sx={{
-                    background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontWeight: 'bold',
-                }}
+              variant="h4"
+              sx={{
+                background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onClick={() => window.location.href = '/home'}
             >
                 NewsScraper
             </Typography>
@@ -93,8 +96,10 @@ const StyledTab = styled(Tab)(({ theme }) => ({
 }));
 
 const NewsInterface = () => {
+  const location = useLocation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTab, setActiveTab] = useState('similarities');
+  const title = location.state?.title || "Default Title";
 
   // Sample data
   const viewpoints = {
@@ -169,14 +174,14 @@ const NewsInterface = () => {
                 borderRadius: `${theme.shape.borderRadius / 2}px`,
               }}
             >
-              Climate Change Policy Debate: Understanding Different Perspectives
+              {title}
             </Typography>
           </Box>
           <LinearProgress variant="determinate" value={30} sx={{ height: 6, borderRadius: 3 }} />
         </Card>
 
         {/* Right Side: Perspectives */}
-        <Card sx={{ flex: 1, boxShadow: 3 }}>
+        <Card sx={{ flex: 1, boxShadow: 3}}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}>
@@ -197,6 +202,11 @@ const NewsInterface = () => {
                   key={key}
                   label={key.charAt(0).toUpperCase() + key.slice(1)}
                   value={key}
+                  sx={{
+                    '&:hover': {
+                      color: theme.palette.primary.main,
+                    },
+                  }}
                 />
               ))}
             </Tabs>
