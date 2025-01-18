@@ -5,7 +5,6 @@ import NewsInterface from './NewsInterface.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <App /> */}
     <NewsInterface />
   </StrictMode>,
 )
