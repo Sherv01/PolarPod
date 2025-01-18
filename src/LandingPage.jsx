@@ -1,6 +1,9 @@
 import React from 'react';
 import { Search, BarChart2, Shield, Globe2 } from 'lucide-react';
 import './index.css'
+// import LoadingPage from './LoadingPage.jsx';  
+import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 // Custom Card Component
 const Card = ({ children, className = '' }) => {
   return (
@@ -10,7 +13,58 @@ const Card = ({ children, className = '' }) => {
   );
 };
 
+
 // Hero Component
+
+// Search Bar Component
+const SearchBar  = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState('');
+
+  // const handleClick = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch('/analyze', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-type': 'application/json'
+  //       },
+  //       body: JSON.stringify({ search: search }),
+  //     });
+      
+  //     const data = await response.json();
+  //     // Handle the response data
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleInputChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  
+  return (
+    <div className="max-w-2xl mx-auto relative">
+      <input
+        type="text"
+        value={search}
+        onChange={handleInputChange}
+        placeholder="Enter a news article URL or topic..."
+        className="w-full px-6 py-4 rounded-lg border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <Link to ={{
+          pathname: '/analysis',
+          state:{search}
+      }}
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+      >Analyze</Link>
+    </div>
+  );
+};
+
 const Hero = () => {
   return (
     <header className="container mx-auto px-4 py-16 text-center">
@@ -22,22 +76,6 @@ const Hero = () => {
       </p>
       <SearchBar />
     </header>
-  );
-};
-
-// Search Bar Component
-const SearchBar = () => {
-  return (
-    <div className="max-w-2xl mx-auto relative">
-      <input 
-        type="text"
-        placeholder="Enter a news article URL or topic..."
-        className="w-full px-6 py-4 rounded-lg border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
-        Analyze
-      </button>
-    </div>
   );
 };
 
@@ -85,7 +123,6 @@ const Features = () => {
       iconColor: "text-purple-600"
     }
   ];
-
   return (
     <section className="container mx-auto px-4 py-16">
       <div className="grid md:grid-cols-3 gap-8">
@@ -96,7 +133,6 @@ const Features = () => {
     </section>
   );
 };
-
 // Stat Card Component
 const StatCard = ({ value, label }) => {
   return (
@@ -109,11 +145,36 @@ const StatCard = ({ value, label }) => {
 
 // Stats Section Component
 const Stats = () => {
-  const stats = [
+  
+  const [stats,setStats] = useState([
     { value: "1M+", label: "Articles Analyzed" },
     { value: "50K+", label: "Active Users" },
     { value: "95%", label: "Accuracy Rate" }
-  ];
+]);
+useEffect(()=>{
+//fetch from the flask server
+// useful analytics stored in the database
+fetch('/stats')
+.then((res => res.json().then((data)=>{
+  setStats([  
+   { 'value':data.articlesAnalyzed,
+      'label': 'Articles Analyzed'
+   },
+   {
+    'value':data.activeUsers,
+    'label':'Active Users'
+    },
+  {
+    'value': data.accuracyRate,
+    'label':"Accuracy Rate"
+  }
+  ]
+  );
+})
+))
+
+},[]);
+
 
   return (
     <section className="bg-slate-900 text-white py-16">
@@ -126,8 +187,8 @@ const Stats = () => {
       </div>
     </section>
   );
-};
 
+};
 // CTA Section Component
 const CTA = () => {
   return (
@@ -138,9 +199,11 @@ const CTA = () => {
       <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
         Join thousands of users who make more informed decisions about their news consumption
       </p>
-      <button className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
-        Get Started Free
-      </button>
+      <Link to ={{
+        pathname: '/discovery',
+      }} className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
+      Get Started
+      </Link>
     </section>
   );
 };
