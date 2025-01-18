@@ -53,7 +53,7 @@ const Header = () => {
                 NewsScraper
             </Typography>
             <Box sx={{ display: 'flex', gap: 3 }}>
-                {['Home', 'About', 'Discovery', 'Contact', 'Team'].map((page) => (
+                {['Home', 'Discovery', 'Team'].map((page) => (
                     <Typography
                         key={page}
                         variant="body1"
@@ -64,6 +64,7 @@ const Header = () => {
                                 color: theme.palette.primary.main,
                             },
                         }}
+                        onClick={() => window.location.href = '/' + page.toLowerCase()}
                     >
                         {page}
                     </Typography>
@@ -131,7 +132,6 @@ const SearchBar = () => {
         sx={{
           input: { color: theme.palette.text.primary },
           backgroundColor: 'transparent',
-          borderRadius: theme.shape.borderRadius,
         }}
       />
       <Button
@@ -139,9 +139,9 @@ const SearchBar = () => {
         sx={{
           ml: 1,
           backgroundColor: theme.palette.primary.main,
-          borderRadius: theme.shape.borderRadius,
           '&:hover': { backgroundColor: theme.palette.secondary.main },
         }}
+        onClick={() => window.location.href = '/analysis'}
       >
         Analyze
       </Button>
@@ -208,9 +208,9 @@ const Features = () => {
     <Box
       sx={{
         py: 8,
+        px: 8, // Add horizontal padding to margin from the edges of the screen
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
-        px: { xs: 2, sm: 4, md: 8 }, // Add padding to the left and right
       }}
     >
       <Grid container spacing={4} justifyContent="center">
@@ -268,13 +268,13 @@ const CTA = () => {
           borderRadius: theme.shape.borderRadius,
           '&:hover': { backgroundColor: theme.palette.secondary.main },
         }}
+        onClick={() => window.location.href = '/discovery'}
       >
         Get Started Free
       </Button>
     </Box>
   );
 };
-
 
 
 const LandingPage = () => {

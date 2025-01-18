@@ -36,7 +36,7 @@ const Header = () => {
                 NewsScraper
             </Typography>
             <Box sx={{ display: 'flex', gap: 3 }}>
-                {['Home', 'About', 'Discovery', 'Contact', 'Team'].map((page) => (
+                {['Home', 'Discovery', 'Team'].map((page) => (
                     <Typography
                         key={page}
                         variant="body1"
@@ -47,6 +47,7 @@ const Header = () => {
                                 color: theme.palette.primary.main,
                             },
                         }}
+                        onClick={() => window.location.href = '/' + page.toLowerCase()}
                     >
                         {page}
                     </Typography>
