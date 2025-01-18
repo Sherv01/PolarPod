@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Search, Clock, TrendingUp } from 'lucide-react';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -103,49 +103,32 @@ const DiscoveryPage = () => {
   const navigate = useNavigate();
 
   // Sample news data - would come from API in real app
-  const newsArticles = [
-    {
-      id: 1,
-      title: "Global Climate Summit Reaches Historic Agreement",
-      category: "Politics",
-      readTime: "5 min",
-      trending: true,
-      image: "https://placehold.co/800x400",
-      isLarge: true,
-    },
-    {
-      id: 2,
-      title: "Tech Giants Announce New AI Collaboration",
-      category: "Technology",
-      readTime: "3 min",
-      trending: true,
-      image: "https://placehold.co/600x400",
-    },
-    {
-      id: 3,
-      title: "Space Tourism: First Commercial Flight Launches",
-      category: "Science",
-      readTime: "4 min",
-      trending: false,
-      image: "https://placehold.co/600x400",
-    },
-    {
-      id: 4,
-      title: "Revolutionary Cancer Treatment Shows Promise",
-      category: "Health",
-      readTime: "6 min",
-      trending: true,
-      image: "https://placehold.co/600x400",
-    },
-    {
-      id: 5,
-      title: "Global Markets React to Economic Policy Shifts",
-      category: "Finance",
-      readTime: "4 min",
-      trending: false,
-      image: "https://placehold.co/600x400",
-    },
-  ];
+  const [newsArticles, setNewsArticles] = useState([]);
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/items'); // Replace with your API endpoint
+        const data = await response.json();
+
+        // Map scraped data into the expected format
+        const formattedArticles = data.map((article, index) => ({
+          id: index + 1,
+          title: article.title || "Untitled Article",
+          category: "General", // Set a default or add categories in scraping logic
+          readTime: `${Math.ceil(Math.random() * 6)} min`, // Generate random read times
+          trending: Math.random() > 0.5, // Randomly mark as trending
+          image: article.image_url || "https://placehold.co/600x400",
+          isLarge: index === 0, // First article as featured
+        }));
+
+        setNewsArticles(formattedArticles);
+      } catch (error) {
+        console.error("Failed to fetch articles:", error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
