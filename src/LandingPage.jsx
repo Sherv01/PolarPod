@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, BarChart2, Shield, Globe2 } from 'lucide-react';
-import { Box, Typography, Grid, TextField, Button, Card, CardContent } from '@mui/material';
+import { Box, Typography, Grid, TextField, Button, Card, CardContent, styled } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 // Custom Theme
 const theme = createTheme({
@@ -74,7 +75,23 @@ const Header = () => {
     );
 };
 
+const StyledSearch = styled(TextField)(({ theme }) => ({
+  backgroundColor: "#525E76",
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
+  '& .MuiInputBase-root': {
+    paddingLeft: theme.spacing(4),
+  },
+  '& .MuiInputBase-input::placeholder': {
+    color: theme.palette.background.paper, // Replace with your desired color
+    opacity: 1, // Ensures the color is fully visible
+  },
+}));
+
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -107,44 +124,18 @@ const Hero = () => {
       >
         Advanced news analysis platform that helps you understand different perspectives and identify potential bias in media coverage.
       </Typography>
-      <SearchBar />
-    </Box>
-  );
-};
-
-const SearchBar = () => {
-  return (
-    <Box
-      sx={{
-        maxWidth: '600px',
-        mx: 'auto',
-        display: 'flex',
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
-        boxShadow: theme.shadows[2],
-        p: 1,
-      }}
-    >
-      <TextField
-        fullWidth
-        placeholder="Enter a news article URL or topic..."
-        variant="outlined"
-        sx={{
-          input: { color: theme.palette.text.primary },
-          backgroundColor: 'transparent',
-        }}
-      />
-      <Button
-        variant="contained"
-        sx={{
-          ml: 1,
-          backgroundColor: theme.palette.primary.main,
-          '&:hover': { backgroundColor: theme.palette.secondary.main },
-        }}
-        onClick={() => window.location.href = '/analysis'}
-      >
-        Analyze
-      </Button>
+      <StyledSearch
+                  variant="outlined"
+                  placeholder="Search for topics, articles, or perspectives..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
+                    ),
+                  }}
+                  sx={{ width: '100%', maxWidth: '900px' }}
+                />
     </Box>
   );
 };

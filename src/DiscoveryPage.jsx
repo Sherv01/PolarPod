@@ -68,6 +68,7 @@ const theme = createTheme({
     },
     background: {
       default: '#1a2129',
+      paper: '#262A33',
     },
     text: {
       primary: '#C0C6D7',
@@ -83,13 +84,17 @@ const theme = createTheme({
 });
 
 const StyledSearch = styled(TextField)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[1],
-  '& .MuiInputBase-root': {
-    paddingLeft: theme.spacing(4),
-  },
-}));
+    backgroundColor: "#525E76",
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[1],
+    '& .MuiInputBase-root': {
+      paddingLeft: theme.spacing(4),
+    },
+    '& .MuiInputBase-input::placeholder': {
+      color: theme.palette.background.paper, // Replace with your desired color
+      opacity: 1, // Ensures the color is fully visible
+    },
+  }));
 
 const DiscoveryPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -153,7 +158,7 @@ const DiscoveryPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             InputProps={{
               startAdornment: (
-                <Search style={{ marginRight: '8px', color: theme.palette.text.secondary }} />
+                <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
               ),
             }}
             fullWidth
