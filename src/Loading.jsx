@@ -1,7 +1,7 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { ThemeProvider, createTheme, Box, Typography, LinearProgress, Button } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 const theme = createTheme({
   palette: {
     primary: {
@@ -22,6 +22,10 @@ const theme = createTheme({
 });
 
 const LoadingScreen = ({ progress = 0, status = 'Loading data...', onCancel }) => {
+    const navigate = useNavigate();
+    function handleClick(){
+        navigate(-1);
+    }
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -97,7 +101,7 @@ const LoadingScreen = ({ progress = 0, status = 'Loading data...', onCancel }) =
               padding: '8px 16px',
               color: theme.palette.primary.main,
             }}
-            onClick={onCancel}
+            onClick={handleClick}
           >
             Cancel
           </Button>
