@@ -13,7 +13,7 @@ dist-ssr
 *.local
 .env
 .gcloud
-.terraform/providers/*
+*.terraform/providers/*
 
 # Editor directories and files
 .vscode/*
