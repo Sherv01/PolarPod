@@ -14,7 +14,6 @@ LEFT_WING_SITES = [
 ]
 
 GEMINI_API_URL = "https://gemini.googleapis.com/v1/summarize"
-GEMINI_API_KEY = "AIzaSyA4O0XNwG6kDg8PE-0o-BY7qya1kAqX6kc"  # Replace with your actual Gemini API key
 
 
 def extract_text(url):
