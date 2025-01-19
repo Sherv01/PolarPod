@@ -104,6 +104,13 @@ const DiscoveryPage = () => {
 
   // Sample news data - would come from API in real app
   const [newsArticles, setNewsArticles] = useState([]);
+  
+  const handleKeyPress = (e)=>{
+    if(event.key == "Enter"){
+      navigate(`/analysis/${searchQuery}`);
+    }
+  }
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -137,6 +144,7 @@ const DiscoveryPage = () => {
         {/* Search Section */}
         <Box maxWidth="md" mx="auto" mb={4}>
           <StyledSearch
+          onKeyPress={handleKeyPress}
             variant="outlined"
             placeholder="Search for topics, articles, or perspectives..."
             value={searchQuery}

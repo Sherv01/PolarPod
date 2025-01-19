@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Play, Pause, Layout } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useParams } from 'react-router-dom';
+import LoadingScreen from './Loading.jsx';
 import {
   createTheme,
   ThemeProvider,
@@ -14,6 +15,7 @@ import {
   Tab,
   LinearProgress,
 } from '@mui/material';
+
 
 const Header = () => {
     return (
@@ -62,6 +64,13 @@ const Header = () => {
     );
 };
 
+
+
+
+
+
+
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -97,29 +106,77 @@ const StyledTab = styled(Tab)(({ theme }) => ({
 
 const NewsInterface = () => {
   const location = useLocation();
+  const [progress, setProgress] = useState(0); // Progress state (0-100)
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTab, setActiveTab] = useState('similarities');
+  const [loading,setLoading]=useState(true);
   const title = location.state?.title || "Default Title";
+  const [viewpoints, setViewpoints]=useState({
+    similarities: [],
+    perspective1: [],
+    perspective2: [],
+  })
+  const searchQuery= useParams();
+  console.log(searchQuery);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Step 1: Start Fetching (10%)
+        setProgress(10);
 
+        // Step 2: Send Request (30%)
+        const response = await fetch('/analyze', {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ search: searchQuery }),
+        });
+        setProgress(30);
+
+        // Step 3: Receive Response (60%)
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        setProgress(60);
+
+        // Step 4: Parse Data (90%)
+        const result = await response.json();
+        setViewpoints({
+          similarities: result.similarities || [],
+          perspective1: result.perspective1 || [],
+          perspective2: result.perspective2 || [],
+        });
+        console.log('Fetched Data:', result);
+        setProgress(90);
+
+        // Step 5: Complete (100%)
+        setLoading(false);
+        setProgress(100);
+      } catch (error) {
+        console.error('Fetch Error:', error);
+        setError(error.message);
+        setProgress(100); // End progress on error
+      }
+    };
+    
+    
+    fetchData();
+  }, [searchQuery]);
+
+
+
+
+  
   // Sample data
-  const viewpoints = {
-    similarities: [
-      'Both sides acknowledge climate change is occurring',
-      'Both agree economic impact should be considered',
-      'Both want energy security',
-    ],
-    perspective1: [
-      'Emphasizes immediate action needed',
-      'Supports stronger regulations',
-      'Focuses on environmental impact',
-    ],
-    perspective2: [
-      'Prefers market-based solutions',
-      'Concerned about economic costs',
-      'Emphasizes technological innovation',
-    ],
-  };
 
+
+  if(loading){
+return(
+<LoadingScreen/>
+);
+
+  }else{
   return (
     <ThemeProvider theme={theme}>
       <Header />
@@ -232,5 +289,5 @@ const NewsInterface = () => {
     </ThemeProvider>
   );
 };
-
+}
 export default NewsInterface;

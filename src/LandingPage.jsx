@@ -93,6 +93,12 @@ const StyledSearch = styled(TextField)(({ theme }) => ({
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const handleKeyPress = (e)=>{
+    if(event.key == "Enter"){
+      navigate(`/analysis/${searchQuery}`);
+    }
+
+  }
 
   return (
     <Box
@@ -127,6 +133,7 @@ const Hero = () => {
         Advanced news analysis platform that helps you understand different perspectives and identify potential bias in media coverage.
       </Typography>
       <StyledSearch
+                  onKeyPress={handleKeyPress}
                   variant="outlined"
                   placeholder="Search for topics, articles, or perspectives..."
                   value={searchQuery}
@@ -136,7 +143,7 @@ const Hero = () => {
                       <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
                     ),
                   }}
-                  sx={{ width: '100%', maxWidth: '900px' }}
+                  sx={{ width: '100%', maxWidth: '900px' }} 
                 />
     </Box>
   );
