@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def generate_news(summaries): 
-    genai.configure(api_key=os.getenv('A_API_KEY'))
+    genai.configure(api_key=os.getenv('API_KEY'))
 
     # output format (dictionary)
     class NewsSummary(typing.TypedDict):
