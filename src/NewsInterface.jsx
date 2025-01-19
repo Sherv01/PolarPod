@@ -1,293 +1,180 @@
-import React, { useState,useEffect } from 'react';
-import { Play, Pause, Layout } from 'lucide-react';
-import { useLocation,useParams } from 'react-router-dom';
-import LoadingScreen from './Loading.jsx';
-import {
-  createTheme,
-  ThemeProvider,
-  styled,
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Tabs,
-  Tab,
-  LinearProgress,
-} from '@mui/material';
-
-
-const Header = () => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 32px',
-                backgroundColor: theme.palette.background.default,
-                boxShadow: theme.shadows[3],
-            }}
-        >
-            <Typography
-              variant="h4"
-              sx={{
-                background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-              onClick={() => window.location.href = '/home'}
-            >
-                NewsScraper
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3 }}>
-                {['Home', 'Discovery', 'Team'].map((page) => (
-                    <Typography
-                        key={page}
-                        variant="body1"
-                        sx={{
-                            color: theme.palette.text.primary,
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.main,
-                            },
-                        }}
-                        onClick={() => window.location.href = '/' + page.toLowerCase()}
-                    >
-                        {page}
-                    </Typography>
-                ))}
-            </Box>
-        </Box>
-    );
-};
-
-
-
-
-
-
-
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#abc6ff',
-    },
-    secondary: {
-      main: '#ACA5DB',
-    },
-    background: {
-      default: '#1a2129',
-      paper: '#262A33',
-    },
-    text: {
-      primary: '#C0C6D7',
-      secondary: '#8D96A8',
-    },
-  },
-  shape: {
-    borderRadius: 20,
-  },
-  typography: {
-    fontFamily: 'Montserrat, sans-serif',
-  },
-});
-
-const StyledTab = styled(Tab)(({ theme }) => ({
-  textTransform: 'capitalize',
-  fontWeight: 'bold',
-  '&.Mui-selected': {
-    color: theme.palette.primary.main,
-  },
-}));
+import React, { useState, useEffect } from 'react';
+import { Play, Pause, Layout, ChevronLeft } from 'lucide-react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 const NewsInterface = () => {
-  const location = useLocation();
-  const [progress, setProgress] = useState(0); // Progress state (0-100)
+  const { searchQuery } = useParams();
+  const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTab, setActiveTab] = useState('similarities');
-  const [loading,setLoading]=useState(true);
-  const title = location.state?.title || "Default Title";
-  const [viewpoints, setViewpoints]=useState({
+  const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [viewpoints, setViewpoints] = useState({
     similarities: [],
     perspective1: [],
     perspective2: [],
-  })
-  const searchQuery= useParams();
-  console.log(searchQuery);
+  });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 20,
+        y: (e.clientY / window.innerHeight) * 20
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Step 1: Start Fetching (10%)
         setProgress(10);
-
-        // Step 2: Send Request (30%)
-        const response = await fetch('/analyze', {
+        const response = await fetch('http://localhost:5000/analyze', {
           method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
+          headers: { 'Content-type': 'application/json' },
           body: JSON.stringify({ search: searchQuery }),
         });
         setProgress(30);
-
-        // Step 3: Receive Response (60%)
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
+        
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         setProgress(60);
-
-        // Step 4: Parse Data (90%)
+        
         const result = await response.json();
         setViewpoints({
           similarities: result.similarities || [],
           perspective1: result.perspective1 || [],
           perspective2: result.perspective2 || [],
         });
-        console.log('Fetched Data:', result);
         setProgress(90);
-
-        // Step 5: Complete (100%)
         setLoading(false);
         setProgress(100);
       } catch (error) {
         console.error('Fetch Error:', error);
-        setError(error.message);
-        setProgress(100); // End progress on error
+        setProgress(100);
       }
     };
-    
     
     fetchData();
   }, [searchQuery]);
 
-
-
-
-  
-  // Sample data
-
-
-  if(loading){
-return(
-<LoadingScreen/>
-);
-
-  }else{
   return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          gap: 4,
-          padding: 4,
-          backgroundColor: theme.palette.background.default,
-        }}
-      >
-        {/* Left Side: Video Player */}
-        <Card sx={{ flex: 1, display: 'flex', flexDirection: 'column', boxShadow: 3 }}>
-          <Box
-            sx={{
-              position: 'relative',
-              flexGrow: 1,
-              backgroundColor: 'black',
-              borderRadius: `${theme.shape.borderRadius}px`,
-            }}
-          >
-            <Box
-              sx={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Button
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.3)' },
-                  borderRadius: '50%',
-                }}
-                onClick={() => setIsPlaying(!isPlaying)}
-              >
-                {isPlaying ? <Pause sx={{ fontSize: 40, color: 'white' }} /> : <Play sx={{ fontSize: 40, color: 'white' }} />}
-              </Button>
-            </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                position: 'absolute',
-                bottom: 16,
-                left: 16,
-                color: 'white',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                padding: '4px 8px',
-                borderRadius: `${theme.shape.borderRadius / 2}px`,
-              }}
-            >
-              {title}
-            </Typography>
-          </Box>
-          <LinearProgress variant="determinate" value={30} sx={{ height: 6, borderRadius: 3 }} />
-        </Card>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white">
+      {/* Animated background grid */}
+      <div className="fixed inset-0 opacity-20">
+        <div className="absolute inset-0" 
+             style={{
+               backgroundImage: 'linear-gradient(#ff4444 1px, transparent 1px), linear-gradient(90deg, #4466ff 1px, transparent 1px)',
+               backgroundSize: '50px 50px',
+               transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+               transition: 'transform 0.1s ease-out'
+             }} />
+      </div>
 
-        {/* Right Side: Perspectives */}
-        <Card sx={{ flex: 1, boxShadow: 3}}>
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}>
-                Perspectives Analysis
-              </Typography>
-              <Layout sx={{ color: theme.palette.text.secondary }} />
-            </Box>
-            <Tabs
-              value={activeTab}
-              onChange={(e, newValue) => setActiveTab(newValue)}
-              textColor="primary"
-              indicatorColor="primary"
-              variant="fullWidth"
-              sx={{ mb: 3 }}
-            >
-              {Object.keys(viewpoints).map((key) => (
-                <StyledTab
-                  key={key}
-                  label={key.charAt(0).toUpperCase() + key.slice(1)}
-                  value={key}
-                  sx={{
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                    },
-                  }}
-                />
-              ))}
-            </Tabs>
-            <Box>
-              {viewpoints[activeTab].map((point, index) => (
-                <Typography
-                  key={index}
-                  variant="body1"
-                  sx={{
-                    marginBottom: 2,
-                    backgroundColor: theme.palette.background.paper,
-                    padding: 2,
-                    borderRadius: theme.shape.borderRadius,
-                  }}
+      {/* Navigation */}
+      <nav className="relative z-10 flex justify-between items-center p-6 md:p-8">
+        <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">
+          NewsScraper
+        </div>
+        <div className="flex gap-8">
+          {['Home', 'Discovery', 'Team'].map((item) => (
+            <button     onClick = {() => window.location.href = '/'+item} key={item} className="relative group">
+              <span className="text-gray-300 hover:text-white transition-colors">{item}</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-blue-500 group-hover:w-full transition-all duration-300" />
+            </button>
+          ))}
+
+        </div>
+      </nav>
+
+      {/* Back Button */}
+      <div className="relative z-10 px-6 md:px-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all group"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span>Back</span>
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 p-6 md:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Video Player Card */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="relative h-[400px] rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 overflow-hidden">
+              {/* Video Player */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <button
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
                 >
-                  {point}
-                </Typography>
-              ))}
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-    </ThemeProvider>
+                  {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
+                </button>
+              </div>
+              
+              {/* Title Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                <h2 className="text-xl font-semibold">{searchQuery}</h2>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                <div
+                  className="h-full bg-gradient-to-r from-red-500 to-blue-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Analysis Card */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-red-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="relative rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold">Perspectives Analysis</h2>
+                <Layout className="w-6 h-6 text-gray-400" />
+              </div>
+
+              {/* Tabs */}
+              <div className="flex gap-4 mb-6">
+                {Object.keys(viewpoints).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 py-2 rounded-full transition-all ${
+                      activeTab === tab
+                        ? 'bg-gradient-to-r from-red-500 to-blue-500 text-white'
+                        : 'bg-white/10 hover:bg-white/20 text-gray-300'
+                    }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Content */}
+              <div className="space-y-4">
+                {viewpoints[activeTab].map((point, index) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all"
+                  >
+                    {point}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
-}
+
 export default NewsInterface;

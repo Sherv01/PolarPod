@@ -1,228 +1,149 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Clock, TrendingUp } from 'lucide-react';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  TextField,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Chip,
-} from '@mui/material';
-
-const Header = () => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 32px',
-                backgroundColor: theme.palette.background.default,
-                boxShadow: theme.shadows[3],
-            }}
-        >
-            <Typography
-                variant="h4"
-                sx={{
-                    background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontWeight: 'bold',
-                    cursor: 'pointer'
-                }}
-                onClick={() => window.location.href = '/home'}
-            >
-                NewsScraper
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3 }}>
-                {['Home', 'Discovery', 'Team'].map((page) => (
-                    <Typography
-                        key={page}
-                        variant="body1"
-                        sx={{
-                            color: theme.palette.text.primary,
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.main,
-                            },
-                        }}
-                        onClick={() => window.location.href = '/' + page.toLowerCase()}
-                    >
-                        {page}
-                    </Typography>
-                ))}
-            </Box>
-        </Box>
-    );
-};
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#abc6ff',
-    },
-    secondary: {
-      main: '#ACA5DB',
-    },
-    background: {
-      default: '#1a2129',
-      paper: '#262A33',
-    },
-    text: {
-      primary: '#C0C6D7',
-      secondary: '#8D96A8',
-    },
-  },
-  shape: {
-    borderRadius: 20,
-  },
-  typography: {
-    fontFamily: 'Montserrat, sans-serif',
-  },
-});
-
-const StyledSearch = styled(TextField)(({ theme }) => ({
-    backgroundColor: "#525E76",
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[1],
-    '& .MuiInputBase-root': {
-      paddingLeft: theme.spacing(4),
-    },
-    '& .MuiInputBase-input::placeholder': {
-      color: theme.palette.background.paper, // Replace with your desired color
-      opacity: 1, // Ensures the color is fully visible
-    },
-  }));
-
 const DiscoveryPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
-
-  // Sample news data - would come from API in real app
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [newsArticles, setNewsArticles] = useState([]);
-  
-  const handleKeyPress = (e)=>{
-    if(event.key == "Enter"){
-      navigate(`/analysis/${searchQuery}`);
-    }
-  }
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 20,
+        y: (e.clientY / window.innerHeight) * 20
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('http://localhost:5000/items'); // Replace with your API endpoint
+        const response = await fetch('http://localhost:5000/items');
         const data = await response.json();
-
-        // Map scraped data into the expected format
         const formattedArticles = data.map((article, index) => ({
           id: index + 1,
           title: article.title || "Untitled Article",
-          category: "General", // Set a default or add categories in scraping logic
-          readTime: `${Math.ceil(Math.random() * 6)} min`, // Generate random read times
-          trending: Math.random() > 0.5, // Randomly mark as trending
-          image: article.image_url || "https://placehold.co/600x400",
-          isLarge: index === 0, // First article as featured
+          category: "General",
+          readTime: `${Math.ceil(Math.random() * 6)} min`,
+          trending: Math.random() > 0.5,
+          image: article.image_url || "/api/placeholder/600/400",
+          isLarge: index === 0,
         }));
-
         setNewsArticles(formattedArticles);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
+        // Fallback data for demonstration
+        setNewsArticles([
+          { id: 1, title: "Featured News Story", category: "Politics", readTime: "5 min", trending: true, image: "/api/placeholder/600/400", isLarge: true },
+          { id: 2, title: "Secondary Story", category: "Technology", readTime: "3 min", trending: false, image: "/api/placeholder/400/300", isLarge: false },
+          { id: 3, title: "Another Important Update", category: "World", readTime: "4 min", trending: true, image: "/api/placeholder/400/300", isLarge: false }
+        ]);
       }
     };
 
     fetchArticles();
   }, []);
-
+  const navigate = useNavigate();
+  const handleKeyPress = (e)=>{
+    if (e.key === "Enter") {
+      navigate(`/analysis/${searchQuery}`);
+    }
+  }
   return (
-    <ThemeProvider theme={theme}>
-    <Header />
-      <Box sx={{ minHeight: '100vh', backgroundColor: theme.palette.background.default, color: '#003064', p: 4 }}>
-        {/* Search Section */}
-        <Box maxWidth="md" mx="auto" mb={4}>
-          <StyledSearch
-          onKeyPress={handleKeyPress}
-            variant="outlined"
-            placeholder="Search for topics, articles, or perspectives..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
-              ),
-            }}
-            fullWidth
-          />
-        </Box>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white">
+      {/* Animated background grid */}
+      <div className="fixed inset-0 opacity-20">
+        <div className="absolute inset-0" 
+             style={{
+               backgroundImage: 'linear-gradient(#ff4444 1px, transparent 1px), linear-gradient(90deg, #4466ff 1px, transparent 1px)',
+               backgroundSize: '50px 50px',
+               transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+               transition: 'transform 0.1s ease-out'
+             }} />
+      </div>
+
+      {/* Navigation */}
+      <nav className="relative z-10 flex justify-between items-center p-6 md:p-8">
+        <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500" onClick = {() => window.location.href = '/home'}>
+        BIAS BUSTER
+        </div>
+        <div className="flex gap-8">
+          {['Home', 'Discovery', 'Team'].map((item) => (
+            <button onClick = {() => window.location.href = '/'+item}key={item} className="relative group">
+              <span className="text-gray-300 hover:text-white transition-colors">{item}</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-blue-500 group-hover:w-full transition-all duration-300" />
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* Search Section */}
+      <div className="relative z-10 px-6 md:px-8 mt-8">
+        <div className={`relative max-w-3xl mx-auto transition-all duration-300 ${isSearchFocused ? 'transform -translate-y-2' : ''}`}>
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500/50 to-blue-500/50 opacity-20 blur-xl rounded-full" />
+          <div className="relative flex items-center bg-white/10 backdrop-blur-lg rounded-full p-2 border border-white/20">
+            <Search className="ml-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search for topics, articles, or perspectives..."
+              className="w-full px-4 py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+              onKeyDown={handleKeyPress}
+            />
+          </div>
+        </div>
 
         {/* News Grid */}
-        <Box maxWidth="lg" mx="auto">
-          <Grid container spacing={3}>
-            {/* Featured Article (Large Tile) */}
-            {newsArticles.filter((article) => article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={8} onClick={() => window.location.href = '/analysis'} style={{ cursor: 'pointer' }} >
-                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
-                  <CardMedia
-                    component="img"
-                    height="300"
-                    image={article.image}
+        <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {newsArticles.map((article) => (
+            <div key={article.id} className={`relative group ${article.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}>
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="relative overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all">
+                <div className="aspect-video overflow-hidden">
+                  <img 
+                    src={article.image} 
                     alt={article.title}
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                   />
-                  <CardContent sx={{ position: 'relative', backgroundColor: theme.palette.primary.main, color: '#003064' }} >
-                    <Box sx = {{ display: 'flex', gap: 1 }}>
-                    <Chip label={article.category} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
-                    <Chip label={"Featured"} sx={{ backgroundColor: theme.palette.secondary.main, color: '#003064' }} />
-                    </Box>
-                    <Typography variant="h6" component="h2" sx={{ mt: 1 }}>
-                      {article.title}
-                    </Typography>
-                    <Box display="flex" alignItems="center" mt={1}>
-                      <Clock style={{ marginRight: 4 }} />
-                      <Typography variant="body2">{article.readTime}</Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-
-            {/* Regular Articles (Smaller Tiles) */}
-            {newsArticles.filter((article) => !article.isLarge).map((article) => (
-              <Grid key={article.id} item xs={12} md={4} >
-                <Card sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer', boxShadow: 3 }} onClick={() => navigate(`/analysis`, { state: { title: article.title } })} >
-                  <CardMedia
-                    component="img"
-                    height="150"
-                    image={article.image}
-                    alt={article.title}
-                  />
-                  <CardContent sx = {{ backgroundColor: '#262A33' }}>
-                    <Chip label={article.category} color="primary" />
-                    <Typography component="h3" sx={{ mt: 1}}>
-                      {article.title}
-                    </Typography>
-                    <Box display="flex" alignItems="center" mt={1}>
-                      <Clock style={{ marginRight: 4, color: theme.palette.text.secondary }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {article.readTime}
-                      </Typography>
-                    </Box>
-                    {article.trending && (
-                      <Box display="flex" alignItems="center" mt={1} color={theme.palette.secondary.main}>
-                        <TrendingUp style={{ marginRight: 4 }} />
-                        <Typography variant="body2">Trending</Typography>
-                      </Box>
+                </div>
+                <div className="p-6">
+                  <div className="flex gap-2 mb-3">
+                    <span className="px-3 py-1 rounded-full text-sm bg-gradient-to-r from-red-500/20 to-blue-500/20 backdrop-blur-sm border border-white/10">
+                      {article.category}
+                    </span>
+                    {article.isLarge && (
+                      <span className="px-3 py-1 rounded-full text-sm bg-gradient-to-r from-blue-500/20 to-red-500/20 backdrop-blur-sm border border-white/10">
+                        Featured
+                      </span>
                     )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Box>
-    </ThemeProvider>
+                  </div>
+                  <h3 className={`${article.isLarge ? 'text-2xl' : 'text-lg'} font-semibold mb-3`}>{article.title}</h3>
+                  <div className="flex items-center gap-4 text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm">{article.readTime}</span>
+                    </div>
+                    {article.trending && (
+                      <div className="flex items-center gap-1 text-blue-400">
+                        <TrendingUp className="w-4 h-4" />
+                        <span className="text-sm">Trending</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,290 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, BarChart2, Shield, Globe2 } from 'lucide-react';
-import { Box, Typography, Grid, TextField, Button, Card, CardContent, styled } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-// Custom Theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#abc6ff',
-    },
-    secondary: {
-      main: '#ACA5DB',
-    },
-    background: {
-      default: '#1a2129',
-      paper: '#262A33',
-    },
-    text: {
-      primary: '#C0C6D7',
-      secondary: '#8D96A8',
-    },
-  },
-  shape: {
-    borderRadius: 20,
-  },
-  typography: {
-    fontFamily: 'Montserrat, sans-serif',
-  },
-});
-
-const Header = () => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 32px',
-                backgroundColor: theme.palette.background.default,
-                boxShadow: theme.shadows[3],
-            }}
-        >
-            <Typography
-              variant="h4"
-              sx={{
-                background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-              onClick={() => window.location.href = '/home'}
-            >
-                NewsScraper
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3 }}>
-                {['Home', 'Discovery', 'Team'].map((page) => (
-                    <Typography
-                        key={page}
-                        variant="body1"
-                        sx={{
-                            color: theme.palette.text.primary,
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.main,
-                            },
-                        }}
-                        onClick={() => window.location.href = '/' + page.toLowerCase()}
-                    >
-                        {page}
-                    </Typography>
-                ))}
-            </Box>
-        </Box>
-    );
-};
-
-const StyledSearch = styled(TextField)(({ theme }) => ({
-  backgroundColor: "#525E76",
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[1],
-  '& .MuiInputBase-root': {
-    paddingLeft: theme.spacing(4),
-  },
-  '& .MuiInputBase-input::placeholder': {
-    color: theme.palette.background.paper, // Replace with your desired color
-    opacity: 1, // Ensures the color is fully visible
-  },
-}));
-
-const Hero = () => {
+const LandingPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 20,
+        y: (e.clientY / window.innerHeight) * 20
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+const navigate = useNavigate();
   const handleKeyPress = (e)=>{
-    if(event.key == "Enter"){
+    if(e.key == "Enter"){
       navigate(`/analysis/${searchQuery}`);
     }
 
   }
 
-  return (
-    <Box
-      sx={{
-        textAlign: 'center',
-        py: 8,
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-      }}
-    >
-      <Typography
-        variant="h3"
-        sx={{
-          fontWeight: 'bold',
-          background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        Uncover Media Bias with AI
-      </Typography>
-      <Typography
-        variant="h6"
-        sx={{
-          mt: 2,
-          mb: 4,
-          color: theme.palette.text.secondary,
-          maxWidth: '600px',
-          mx: 'auto',
-        }}
-      >
-        Advanced news analysis platform that helps you understand different perspectives and identify potential bias in media coverage.
-      </Typography>
-      <StyledSearch
-                  onKeyPress={handleKeyPress}
-                  variant="outlined"
-                  placeholder="Search for topics, articles, or perspectives..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Search style={{ marginRight: '8px', color: theme.palette.background.paper }} />
-                    ),
-                  }}
-                  sx={{ width: '100%', maxWidth: '900px' }} 
-                />
-    </Box>
-  );
-};
-
-const FeatureCard = ({ icon: Icon, title, description }) => {
-  return (
-    <Card
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[3],
-        '&:hover': { boxShadow: theme.shadows[6] },
-      }}
-    >
-      <CardContent sx={{ p: 4, textAlign: 'center' }}>
-        <Box
-          sx={{
-            width: 60,
-            height: 60,
-            mx: 'auto',
-            mb: 2,
-            backgroundColor: theme.palette.primary.main,
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon size={30} color="#003064" />
-        </Box>
-        <Typography variant="h6" sx={{ color: theme.palette.text.primary, fontWeight: 'bold' }}>
-          {title}
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 1, color: theme.palette.text.secondary }}>
-          {description}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-};
-
-const Features = () => {
-  const features = [
-    {
-      icon: BarChart2,
-      title: 'Bias Detection',
-      description: 'Our AI analyzes language patterns, source credibility, and contextual factors to identify potential bias in news articles.',
-    },
-    {
-      icon: Shield,
-      title: 'Fact Checking',
-      description: 'Cross-reference claims with verified sources and trusted databases to ensure accuracy and reliability.',
-    },
-    {
-      icon: Globe2,
-      title: 'Global Coverage',
-      description: 'Analyze news from multiple sources worldwide to get a comprehensive view of how different outlets cover the same story.',
-    },
-  ];
 
   return (
-    <Box
-      sx={{
-        py: 8,
-        px: 8, // Add horizontal padding to margin from the edges of the screen
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-      }}
-    >
-      <Grid container spacing={4} justifyContent="center">
-        {features.map((feature, index) => (
-          <Grid key={index} item xs={12} sm={6} md={4}>
-            <FeatureCard {...feature} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-};
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white overflow-hidden">
+      {/* Animated background grid */}
+      <div className="fixed inset-0 opacity-20">
+        <div className="absolute inset-0" 
+             style={{
+               backgroundImage: 'linear-gradient(#ff4444 1px, transparent 1px), linear-gradient(90deg, #4466ff 1px, transparent 1px)',
+               backgroundSize: '50px 50px',
+               transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+               transition: 'transform 0.1s ease-out'
+             }} />
+      </div>
 
-const CTA = () => {
-  return (
-    <Box
-      sx={{
-        textAlign: 'center',
-        py: 8,
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{
-          fontWeight: 'bold',
-          background: 'linear-gradient(45deg, #abc6ff, #ACA5DB)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        Start Analyzing News Today
-      </Typography>
-      <Typography
-        variant="h6"
-        sx={{
-          mt: 2,
-          mb: 4,
-          color: theme.palette.text.secondary,
-          maxWidth: '600px',
-          mx: 'auto',
-        }}
-      >
-        Join thousands of users who make more informed decisions about their news consumption.
-      </Typography>
-      <Button
-        variant="contained"
-        sx={{
-          px: 4,
-          py: 2,
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          backgroundColor: theme.palette.primary.main,
-          borderRadius: theme.shape.borderRadius,
-          '&:hover': { backgroundColor: theme.palette.secondary.main },
-        }}
-        onClick={() => window.location.href = '/discovery'}
-      >
-        Get Started Free
-      </Button>
-    </Box>
-  );
-};
+      {/* Navigation */}
+      <nav className="relative z-10 flex justify-between items-center p-6 md:p-8">
+        <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500"onClick = 'window.location.href = "/home"'>
+          BIAS BUSTER
+        </div>
+        <div className="flex gap-8">
+          {['Home', 'Discovery', 'Team'].map((item) => (
+            <button onClick = {() => window.location.href = '/'+item} key={item} className="relative group">
+              <span className="text-gray-300 hover:text-white transition-colors">{item}</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-500 to-blue-500 group-hover:w-full transition-all duration-300" />
+            </button  >
+          ))}
+        </div>
+      </nav>
 
+      {/* Hero Section */}
+      <main className="relative z-10 px-6 md:px-8">
+        <div className="max-w-6xl mx-auto pt-20 pb-32">
+          <h1 className="text-5xl md:text-7xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-blue-500 to-red-500 animate-gradient bg-600%">
+            Uncover Media Bias with AI
+          </h1>
+          
+          {/* Floating search bar */}
+          <div className={`relative max-w-3xl mx-auto mt-12 transition-all duration-300 ${isSearchFocused ? 'transform -translate-y-2' : ''}`}>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/50 to-blue-500/50 opacity-20 blur-xl rounded-full" />
+            <div className="relative flex items-center bg-white/10 backdrop-blur-lg rounded-full p-2 border border-white/20">
+              <Search className="ml-4 text-gray-400" />
+              <input     onKeyPress={handleKeyPress}
 
-const LandingPage = () => {
-  return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Hero />
-      <Features />
-      <CTA />
-    </ThemeProvider>
+                type="text"
+                placeholder="Search for topics, articles, or perspectives..."
+                className="w-full px-4 py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+                onKeyDown={handleKeyPress}
+              />
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-3 gap-8 mt-32">
+            {[
+              { icon: BarChart2, title: 'Bias Detection', color: 'from-red-500 to-red-600' },
+              { icon: Shield, title: 'Fact Checking', color: 'from-blue-500 to-blue-600' },
+              { icon: Globe2, title: 'Global Coverage', color: 'from-red-500 to-blue-500' }
+            ].map(({ icon: Icon, title, color }) => (
+              <div key={title} className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                <div className="relative p-8 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all">
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${color} p-4 mb-6`}>
+                    <Icon className="w-full h-full text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4">{title}</h3>
+                  <p className="text-gray-400">Advanced AI analysis helps you understand different perspectives and make informed decisions.</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center mt-32">
+            <button className="group relative px-8 py-4 bg-gradient-to-r from-red-500 to-blue-500 rounded-full font-semibold text-lg">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-blue-500 rounded-full blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
+              <span className="relative" onClick = {()=>{ window.location.href='/discovery'}}>Get Started Free</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 

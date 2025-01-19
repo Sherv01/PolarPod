@@ -16,8 +16,6 @@ const router = createBrowserRouter(
       <Route path="/home" element={<LandingPage />} />
       <Route path = '/home/analysis/:id' element = {<NewsInterface/>}/>
       <Route path="/home/analysis" element={<DiscoveryPage />} />
-
-
     </>
   )
 );
