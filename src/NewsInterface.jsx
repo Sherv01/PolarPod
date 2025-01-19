@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, Layout, ChevronLeft } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import LoadingScreen from './Loading.jsx';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const NewsInterface = () => {
-  const { searchQuery } = useParams();
+  const { id } = useParams();
+  console.log(id); 
+  ; // Converts searchQuery to a string
+  // alert(queryString);
   const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [activeTab, setActiveTab] = useState('similarities');
+  const [activeTab, setActiveTab] = useState('similarities'); // Default to a valid key
   const [loading, setLoading] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [viewpoints, setViewpoints] = useState({
@@ -35,7 +55,7 @@ const NewsInterface = () => {
         const response = await fetch('http://localhost:5000/analyze', {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ search: searchQuery }),
+          body: JSON.stringify({ "search": id }),
         });
         setProgress(30);
         
@@ -48,6 +68,7 @@ const NewsInterface = () => {
           perspective1: result.perspective1 || [],
           perspective2: result.perspective2 || [],
         });
+        console.log(viewpoints);
         setProgress(90);
         setLoading(false);
         setProgress(100);
@@ -58,8 +79,11 @@ const NewsInterface = () => {
     };
     
     fetchData();
-  }, [searchQuery]);
+  }, [id]);
 
+  if(loading){
+    return <LoadingScreen/>
+  }else{
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white">
       {/* Animated background grid */}
@@ -76,7 +100,7 @@ const NewsInterface = () => {
       {/* Navigation */}
       <nav className="relative z-10 flex justify-between items-center p-6 md:p-8">
         <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">
-          NewsScraper
+          BIAS BUSTER
         </div>
         <div className="flex gap-8">
           {['Home', 'Discovery', 'Team'].map((item) => (
@@ -119,7 +143,7 @@ const NewsInterface = () => {
               
               {/* Title Overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                <h2 className="text-xl font-semibold">{searchQuery}</h2>
+                <h2 className="text-xl font-semibold">{id}</h2>
               </div>
               
               {/* Progress Bar */}
@@ -175,6 +199,7 @@ const NewsInterface = () => {
       </div>
     </div>
   );
+}
 };
 
 export default NewsInterface;
