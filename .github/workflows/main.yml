@@ -1,0 +1,28 @@
+name: Workflow Using Secret
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Use the secret
+        run: |
+          echo "Using secret MY_SECRET_KEY"
+          echo "API Key is ${{ secrets.MY_SECRET_KEY }}"  # Use the secret in your script (but be cautious about logging it)
+
+      # If you need to use the secret in a script or configuration file:
+      
+      - name: Set up API key as environment variable
+        run: |
+          echo "API_KEY=${{ secrets.MY_SECRET_KEY }}" >> $GITHUB_ENV  # Set the secret as an environment variable for later steps
+      - name: Example usage of API_KEY
+        run: |
+          echo "The API key is stored on the environment variable"
+          echo "API Key: $API_KEY$ 
