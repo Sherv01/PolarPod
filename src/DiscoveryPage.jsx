@@ -37,11 +37,11 @@ const DiscoveryPage = () => {
       } catch (error) {
         console.error("Failed to fetch articles:", error);
         // Fallback data for demonstration
-        setNewsArticles([
-          { id: 1, title: "Featured News Story", category: "Politics", readTime: "5 min", trending: true, image: "/api/placeholder/600/400", isLarge: true },
-          { id: 2, title: "Secondary Story", category: "Technology", readTime: "3 min", trending: false, image: "/api/placeholder/400/300", isLarge: false },
-          { id: 3, title: "Another Important Update", category: "World", readTime: "4 min", trending: true, image: "/api/placeholder/400/300", isLarge: false }
-        ]);
+        // setNewsArticles([
+        //   { id: 1, title: "Featured News Story", category: "Politics", readTime: "5 min", trending: true, image: "/api/placeholder/600/400", isLarge: true },
+        //   { id: 2, title: "Secondary Story", category: "Technology", readTime: "3 min", trending: false, image: "/api/placeholder/400/300", isLarge: false },
+        //   { id: 3, title: "Another Important Update", category: "World", readTime: "4 min", trending: true, image: "/api/placeholder/400/300", isLarge: false }
+        // ]);
       }
     };
 
@@ -100,10 +100,11 @@ const DiscoveryPage = () => {
           </div>
         </div>
 
+
         {/* News Grid */}
         <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {newsArticles.map((article) => (
-            <div key={article.id} className={`relative group ${article.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}>
+            <div onClick = {()=>{navigate('/analysis/'+article.title)}}key={article.id} className={`relative group ${article.isLarge ? 'md:col-span-2 lg:col-span-2' : ''}`}>
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
               <div className="relative overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all">
                 <div className="aspect-video overflow-hidden">
