@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const LoadingScreen = ({ progress = 0, onCancel }) => {
+const LoadingScreen = ({ progress, onCancel }) => {
   const navigate = useNavigate();
   
   return (

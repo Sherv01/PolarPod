@@ -87,7 +87,7 @@ const NewsInterface = () => {
   };
 
   if (loading) {
-    return <LoadingScreen />;
+    return <LoadingScreen progress={progress} />;
   } else {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white">
@@ -107,7 +107,7 @@ const NewsInterface = () => {
 
         {/* Navigation */}
         <nav className="relative z-10 flex justify-between items-center p-6 md:p-8">
-          <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">
+          <div onClick={() => (window.location.href = '/')} className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500"> 
             BIAS BUSTER
           </div>
           <div className="flex gap-8">
@@ -141,18 +141,20 @@ const NewsInterface = () => {
             {/* Video Player Card */}
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity" />
-              <div className="relative h-[400px] rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 overflow-hidden">
+              <div className="relativerelative h-[700px] w-[400px] rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 overflow-hidden">
                 {/* Video Player */}
                 <video
                   ref={videoRef}
                   src={videoUrl}
                   className="absolute inset-0 w-full h-full object-cover"
                   controls={false}
+                  autoPlay={true}
+                  loop={true}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <button
                     onClick={handlePlayPause}
-                    className="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
+                    className="w-16 h-16 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
                   >
                     {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
                   </button>
