@@ -14,7 +14,7 @@ provider "aws" {
 
 # S3 bucket for storing videos, audio, and text
 resource "aws_s3_bucket" "media_bucket" {
-  bucket = "brainrot-media-bucket"  # Change this to a unique name
+  bucket = "brainrot-media-bucket" 
 }
 
 resource "aws_s3_bucket_public_access_block" "media_bucket_public_access" {
