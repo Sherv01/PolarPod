@@ -5,6 +5,7 @@ import typing
 import json
 import re
 from dotenv import load_dotenv
+import boto3
 
 load_dotenv()
 
@@ -57,8 +58,9 @@ def generate_news(summaries):
 #         print(f"{languages:<8} | {name:<24} | {gender:<8} | {rate:,} Hz")
 
 
-def text_to_wav(voice_name: str, ai_summaries: dict):
+def text_to_wav(ai_summaries: dict):
     # define tts parameters
+    voice_name = "en-US-Wavenet-C"
     language_code = "-".join(voice_name.split("-")[:2])
     voice_params = tts.VoiceSelectionParams(
                 language_code=language_code, name=voice_name
@@ -68,7 +70,7 @@ def text_to_wav(voice_name: str, ai_summaries: dict):
                 pitch=-6.8,
                 speaking_rate=1.38
             )
-    client = tts.TextToSpeechClient()
+    client = tts.TextToSpeechClient.from_service_account_json('.gcloud/servicekey.json')
     
     # create brainrot tts and save to .wav file
     text_input = tts.SynthesisInput(text=ai_summaries["brainrot"])
@@ -78,10 +80,31 @@ def text_to_wav(voice_name: str, ai_summaries: dict):
         voice=voice_params,
         audio_config=audio_config,
     )
-    filename = f"audio/brainrot{1}.wav"
+    filename = f"audio/brainrot.mp3"
+
     with open(filename, "wb") as out:
         out.write(response.audio_content)
         print(f'Generated speech saved to "{filename}"')
+    # Replace with your AWS credentials and bucket name
+    aws_access_key_id = 'YOUR_ACCESS_KEY_ID'
+    aws_secret_access_key = 'YOUR_SECRET_ACCESS_KEY'
+    bucket_name = 'brainrot-media-bucket'
+    file_path = filename
+
+    
+
+    # Create an S3 client
+    s3 = boto3.client('s3', 
+                    aws_access_key_id="os.getenv('AWS_KEY')", 
+                    aws_secret_access_key="os.getenv('AWS_SECRET_KEY')")
+
+    # Upload the file to S3
+    try:
+        s3.upload_file(file_path, bucket_name, 'uploaded_file.mp3') 
+        print(f"File uploaded to s3://{bucket_name}/uploaded_file.mp3")
+    except Exception as e:
+        print(f"Error uploading file: {e}")
+
 
 
 # testing: sample article summary to be replaced by input
@@ -94,4 +117,4 @@ summaries = {'right_wing': "This Fox News summary covers a range of topics relat
 ai_summaries = generate_news(summaries)
 print(json.dumps(ai_summaries, indent=4))
 # list_voices("en")
-text_to_wav("en-US-Wavenet-C", ai_summaries)
+text_to_wav(ai_summaries)
