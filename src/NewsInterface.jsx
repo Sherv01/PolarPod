@@ -21,7 +21,7 @@ import LoadingScreen from './Loading.jsx';
 
 const NewsInterface = () => {
   const { id } = useParams();
-  console.log(id); 
+  // console.log(id); 
   ; // Converts searchQuery to a string
   // alert(queryString);
   const navigate = useNavigate();
