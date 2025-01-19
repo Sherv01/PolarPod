@@ -1,12 +1,15 @@
+import os
 import google.generativeai as genai
 import google.cloud.texttospeech as tts
 import typing
 import json
 import re
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def generate_news(summaries): 
-    genai.configure(api_key="AIzaSyA4O0XNwG6kDg8PE-0o-BY7qya1kAqX6kc")
+    genai.configure(api_key=os.getenv('A_API_KEY'))
 
     # output format (dictionary)
     class NewsSummary(typing.TypedDict):
