@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainrot Video Generator</title>
+</head>
+<body>
+    <h1>Brainrot Video Generator</h1>
+
+    <button id="generateVideoBtn">Generate Video</button>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('generateVideoBtn').addEventListener('click', async () => {
+            try {
+                // Fetch the video URL from S3
+                const videoUrl = `https://brainrot-media-bucket.s3.amazonaws.com/input/video.mp4`;
+
+                // Display the video on the screen
+                document.getElementById('result').innerHTML = `
+                    <h2>Generated Video</h2>
+                    <video controls src="${videoUrl}" width="600"></video>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
