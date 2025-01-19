@@ -82,7 +82,7 @@ const NewsInterface = () => {
   }, [id]);
 
   if(loading){
-    return <LoadingScreen/>
+    return <LoadingScreen progress={progress}/>
   }else{
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-blue-950 text-white">
