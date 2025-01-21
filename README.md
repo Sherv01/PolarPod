@@ -16,11 +16,11 @@ In today's overstimulated, short-form content driven world, our attention spans 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/newsscraper.git
+    git clone https://github.com/yourusername/Bias-Buster.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd newsscraper
+    cd Bias-Buster
     ```
 3. Install the required dependencies:
     ```bash
