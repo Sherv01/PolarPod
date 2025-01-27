@@ -105,7 +105,7 @@ def text_to_wav(ai_summaries: dict):
     except Exception as e:
         print(f"Error uploading file: {e}")
 
-
+ 
 
 # testing: sample article summary to be replaced by input
 # summaries = {
